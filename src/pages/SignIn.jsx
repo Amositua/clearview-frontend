@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../slices/usersApiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCredentials } from '../slices/authSlice';
-// import { toast } from 'react-toastify'
 import styled from 'styled-components';
 
 const SignInPage = () => {
@@ -13,10 +12,10 @@ const SignInPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [ login ] = useLoginMutation()
+  const [login] = useLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -28,26 +27,27 @@ const SignInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Clear any previous errors
 
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
 
-    console.log('Signed in with:', email, password);
-    
     try {
-        const res = await login({ email, password }).unwrap()
-        dispatch(setCredentials({ ...res }))
-        navigate('/upload-document')
-        console.log(res)
-      } catch (err) {
-        // toast.error(err)
-      }
-    // Reset form after successful sign-in
+      const res = await login({ email, password }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate('/upload-document');
+    } catch (err) {
+      // Don't clear the form on error
+      setError(err?.data?.message || 'An error occurred during sign in');
+      console.error('Login error:', err);
+      return; // Return early on error
+    }
+
+    // Only clear form after successful sign-in
     setEmail('');
     setPassword('');
-    setError('');
   };
 
   return (
@@ -64,6 +64,7 @@ const SignInPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              required // Add required attribute
             />
           </div>
           <div>
@@ -74,9 +75,16 @@ const SignInPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              required // Add required attribute
+              minLength="6" // Add minimum length if applicable
             />
           </div>
-          <SubmitButton type="submit">Sign In</SubmitButton>
+          <SubmitButton 
+            type="submit"
+            disabled={!email || !password} // Disable if fields are empty
+          >
+            Sign In
+          </SubmitButton>
         </form>
         <ForgotPasswordLink href="/forgot-password">Forgot Password?</ForgotPasswordLink>
         <SignUpLink>
