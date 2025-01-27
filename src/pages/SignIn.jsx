@@ -35,6 +35,8 @@ const SignInPage = () => {
     }
 
     try {
+      localStorage.clear();
+      
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate('/upload-document');
