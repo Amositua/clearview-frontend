@@ -42,6 +42,7 @@ import AgreementEdit from "./pages/AgreementEdit";
 import { useLogoutMutation } from "./slices/usersApiSlice";
 import DocumentSigning from "./pages/SignDocument";
 import NotificationPage from "./pages/Notifications";
+import CalendarPage from "./pages/CalenderSync";
 
 // import Documents from '.';
 // import History from './pages/History';
@@ -329,7 +330,7 @@ function AppContent() {
                 $active={location.pathname === "/upload-document"}
               >
                 <Home size={20} />
-                Upload Document
+                Send Document
               </NavItem>
               <NavItem
                 to="/create-agreement"
@@ -354,13 +355,9 @@ function AppContent() {
 
             <NavSection>
               <h2>MORE TOOLS</h2>
-              <NavItem onClick={handleLogout} disabled={isLoading}>
+              <NavItem to="/sync-calendar" $active={location.pathname === "/sync-calendar"}>
                 <Users size={20} />
-                Sync Calender
-              </NavItem>
-              <NavItem to="/notifications" onClick={handleLogout} disabled={isLoading}>
-                <Users size={20} />
-                Notifications
+                Sync to Calendar
               </NavItem>
 
               <NavSection>
@@ -416,9 +413,9 @@ function AppContent() {
           <Route path="/edit-document/:id" element={<AgreementEdit />} />
 
           <Route path="/sign-document" element={<DocumentSigning />} />
-          <Route path="/document-insight" element={<HomePage />} />
+          {/* <Route path="/document-insight" element={<HomePage />} /> */}
 
-          <Route path="/calender-sync" element={<HomePage />} />
+          <Route path="/sync-calendar" element={<CalendarPage />} />
           <Route path="/notifications" element={<NotificationPage />} />
 
           <Route path="/sign-in" element={<SignInPage />} />
